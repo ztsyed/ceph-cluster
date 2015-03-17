@@ -33,7 +33,7 @@ check-docker:
 
 check-registry:
 	@if [ -z "$$DOCKER_REGISTRY" ]; then \
-	  echo "DOCKER_REGISTRY is not exported, try:  make dev-environment"; \
+	  echo "DOCKER_REGISTRY is not exported"; \
 	exit 2; \
 	fi
 

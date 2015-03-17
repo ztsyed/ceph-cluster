@@ -1,4 +1,4 @@
-FROM ceph-base:git-
+FROM ceph-base:git-eea3904
 
 # install Apache and RADOS gateway
 RUN curl -sSL https://raw.github.com/ceph/ceph/master/keys/autobuild.asc | apt-key add -
