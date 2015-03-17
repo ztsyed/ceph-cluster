@@ -1,0 +1,11 @@
+[Unit]
+Description=Bootstrap environment variables per node
+
+[Service]
+Type=oneshot
+ExecStartPre=/bin/bash -c '/usr/bin/rm /etc/environment || /bin/true;'
+ExecStart=/bin/bash -c 'export HOST_IP=$(/usr/bin/ip route | /usr/bin/awk \'/default/ {print $9}\');echo "Host IP is " $HOST_IP;echo HOST_IP=$HOST_IP >>/etc/environment;echo MACHINE_ID=%m >>/etc/environment;echo HOSTNAME=%H >>/etc/environment;'
+SuccessExitStatus=0 1
+
+[X-Fleet]
+Global=true
