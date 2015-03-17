@@ -18,7 +18,7 @@ export ETCD="$HOST:$ETCD_PORT"
 export ETCD_PATH=${ETCD_PATH:-/ceph/gateway}
 export HOST_ETCD_PATH=${HOST_ETCD_PATH:-/ceph/gateway/hosts/$HOST}
 export ETCD_TTL=${ETCD_TTL:-10}
-
+export HOSTNAME=`hostname`
 # wait for etcd to be available
 until etcdctl --no-sync -C $ETCD ls >/dev/null 2>&1; do
     echo "waiting for etcd at $ETCD..."
@@ -90,14 +90,14 @@ fi
 
 cat <<EOT >> /etc/ceph/ceph.conf
 [client.radosgw.gateway]
-host = $HOST
+host = $HOSTNAME
 keyring = /etc/ceph/ceph.client.radosgw.keyring
 rgw socket path = /var/run/ceph/ceph.radosgw.gateway.fastcgi.sock
 log file = /dev/stdout
-rgw dns name = $HOST
+rgw dns name = $HOSTNAME
 EOT
 
-echo /etc/ceph/ceph.conf
+cat /etc/ceph/ceph.conf
 
 if ! radosgw-admin user info --uid=ceph >/dev/null 2>&1 ; then
   radosgw-admin user create --uid=ceph --display-name="Ceph Admin" >/dev/null
