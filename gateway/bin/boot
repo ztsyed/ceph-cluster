@@ -3,7 +3,7 @@
 # This script is designed to be run inside the container
 #
 
-echo "HELLLOOOOO!!!"
+echo "Starting Ceph Gateway script"
 
 
 # fail hard and fast even on pipelines
