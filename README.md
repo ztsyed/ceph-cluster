@@ -50,13 +50,13 @@ First run bootstrap. This will create `/env/environment` file for each node in t
 fleetctl start ceph-bootstrap.service
 ```
 
-Run Ceph Monitor
+####Run Ceph Monitor
 
 ``` bash
 fleetctl start ceph-monitor@1.service
 ```
 
-Run Ceph OSD
+####Run Ceph OSD
 ** You need preppare disks before launching this **
 In the current setup, we have `dev/sda` that is formatted with btrfs. The command to format is `mkfs.btrfs --label osd_disk /dev/sda`
 
@@ -69,12 +69,13 @@ if you want to run on all nodes, then use the following, assuming you have `n` n
 fleetctl start ceph-osd@{1..n}.service
 ```
 
-Run Ceph Medatadata
+####Run Ceph Medatadata
 
 ``` bash
 fleetctl start ceph-metadata@1.service
 ```
-Run Ceph Gateway
+
+####Run Ceph Gateway
 
 ``` bash
 fleetctl start ceph-gateway@1.service
