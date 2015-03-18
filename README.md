@@ -1,4 +1,4 @@
-From this repository, you will generate Docker Containers and Fleet Service configuration for Ceph Cluster. Therefore, you **need** an existing fleet cluster running, either inside vagrant or on baremetal. It is also useful to have a local registry running.
+From this repository, you will generate Docker Containers and Fleet Service configuration for Ceph Cluster. Therefore, you **need** an existing fleet cluster running. It is also useful to have a local registry running.
 
 This work is inspired from http://github.com/peterrosell/ceph-coreos-vagrant, https://github.com/ceph/ceph-docker,and https://github.com/deis/deis/
 
