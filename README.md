@@ -14,6 +14,7 @@ This basically injects $DOCKER_REGISTRY in the service templates
 ``` bash
 make services-from-templates
 ```
+This will user `services/templates` to create services in `gen/services` folder.
 
 ## Build and Push Docker Containers
 
