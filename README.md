@@ -1,62 +1,99 @@
+From this repository, you will generate Docker Containers and Fleet Service configuration for Ceph Cluster. Therefore, you **need** an existing fleet cluster running, either inside vagrant or on baremetal. It is also useful to have a local registry running.
 
 ## Set up your own docker registry
 
-	docker run -d registry 
+	docker run -d -v /path/to/registry_data:/registry -e STORAGE_PATH=/registry registry
 
-Run this to set your docker registry. It will be used by the makefile.
+Run this to set your docker registry. It will be used by the makefile. **Dont forget the trailing `/`**
 
-	export MY_DOCKER_REGISTRY=my-docker-server:5000
+	export DOCKER_REGISTRY=my-docker-server:5000/
 
-Tips: Add it to your ~/.profile
-
-A new cluster always needs a unique discovery-url. You can't reuse it so if you destroy the cluster and recreates it you must generate a new url by running the command again. It must be added to a config file that is provided to CoreOS. It can easily be created by running this command:
-
-``` bash
-make discovery-url
-```
-
-To start the cluster, 3 servers. Run the following command:
-
-``` bash
-make create-cluster
-```
-
-This command will not be able to contact the cluster the first time you run it due to missing config. Source the env-file to get it set. Each terminal that you use and where you want to use fleetctl you need to source the env-file.
-
-	. ./env
-
-Ceph's different services are installed and managed with fleetctl. To generate the service files from template run the command:
+## Create Fleet Services
+This basically injects $DOCKER_REGISTRY in the service templates
 
 ``` bash
 make services-from-templates
 ```
 
-Before you can start the services you need to register ssh key and set two environment variables. The command below registers the ssh key and creates and shows the environment variables to set. This is the env-file that must be sourced to be able to run. 
+## Build and Push Docker Containers
+
+Make docker containers
 
 ``` bash
-make dev-environment
+make build
 ```
 
-##Trobleshoting
-If fleetctl complains about bad ssh keys they can be removed with this command.
+Push containers to the registry
 ``` bash
-ssh-keygen -f "~/.fleectl/known_hosts" -R "[127.0.0.1]:2222"
+make push
 ```
-Or just delete the ```known_hosts``` file
+
+## Configure FleetCtl
+If you are talking to a remote fleet cluster, use FLEETCTL_ENDPOINT
+
 ``` bash
-rm ~/.fleetctl/known_hosts
+export FLEETCTL_ENDPOINT=http://x.x.x.x:4001
 ```
-## Amazon S3 API
 
-### Create a user
+Verify fleetctl is working
 
-	vagrant ssh core-03 -- -t docker exec -it ceph-gateway bash
-	root@core-03:/app# radosgw-admin user create --uid=johndoe --display-name="John Doe" --email=john@example.com 
+``` bash
+fleetctl list-machines
+```
 
-### Access gateway
 
-To test Ceph Object Gateway we can use a nice tool named DragonDisk. It's freeware and available here, http://www.dragondisk.com. Download and unzip it.
+## Start Cluster
+First run bootstrap. This will create `/env/environment` file for each node in the cluster, which contains node's hostname, ip and machine id. We will source this file when launching services and the values to start services
 
-Start DragonDisk with the start script, ./dragondisk. Then add an account via the File-menu. Change the Provider to "Other S3 compatible service" and enter 172.21.13.103 as Service Endpoint. Fill in the username, access key and secret key and save the account.
+``` bash
+fleetctl start ceph-bootstrap.service
+```
 
-NOTE! If you have any backslash in the key then you need to remove it, it's just an escape character for representing slashes in json.
+Run Ceph Monitor
+
+``` bash
+fleetctl start ceph-monitor@1.service
+```
+
+Run Ceph OSD
+** You need preppare disks before launching this **
+In the current setup, we have `dev/sda` that is formatted with btrfs. The command to format is `mkfs.btrfs --label osd_disk /dev/sda`
+
+``` bash
+fleetctl start ceph-osd@1.service
+```
+if you want to run on all nodes, then use the following, assuming you have `n` number of nodes
+
+``` bash
+fleetctl start ceph-osd@{1..n}.service
+```
+
+Run Ceph Medatadata
+
+``` bash
+fleetctl start ceph-metadata@1.service
+```
+Run Ceph Gateway
+
+``` bash
+fleetctl start ceph-gateway@1.service
+```
+
+
+## Verify Cluster Status
+Easiest way is to use the ceph-base container (we built that earlier) and  inside that use ceph to check cluster health
+
+```bash
+docker run -ti $DOCKER_REGISTRYceph-base /bin/bash
+```
+Inside the container
+```bash
+confd -onetime -config-file /app/confd.toml -node <YOUR_ETCD_HOST>:4001
+```
+The configuration is stored at /etc/ceph inside the container. Now run `ceph -w` to view the cluster status.
+
+## Create S3 user
+
+```bash
+radosgw-admin user create --uid=johndoe --display-name="John Doe" --email=john@example.com
+```
