@@ -18,4 +18,3 @@ ExecStart=/usr/bin/docker run --rm --name ceph-osd-${OSD_DISK} --net=host --pid=
 ExecStop=/usr/bin/docker stop ceph-osd-${OSD_DISK}
 
 [X-Fleet]
-MachineMetadata="storage=hdd"

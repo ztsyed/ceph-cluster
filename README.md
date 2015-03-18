@@ -60,7 +60,7 @@ fleetctl start ceph-monitor@1.service
 
 ####Run Ceph OSD
 ** You need preppare disks before launching this **
-In the current setup, we have `dev/sda` that is formatted with btrfs. The command to format is `mkfs.btrfs --label osd_disk /dev/sda`
+In the current setup, we **EXPECT** to have `dev/sda` that is formatted with btrfs. The command to format is `mkfs.btrfs --label osd_disk /dev/sda`.
 
 ``` bash
 fleetctl start ceph-osd@1.service
