@@ -1,4 +1,4 @@
-From this repository, you will generate Docker Containers and Fleet Service configuration for Ceph Cluster. Therefore, you **need** an existing fleet cluster running. It is also useful to have a local registry running.
+From this repository, you will generate Docker Containers and Fleet Service configuration for Ceph Cluster. Therefore, you **need** an existing fleet cluster running. It is also useful to have a private registry running. This registry should also be accessible to the target machines running the containers.
 
 This work is inspired from http://github.com/peterrosell/ceph-coreos-vagrant, https://github.com/ceph/ceph-docker,and https://github.com/deis/deis/
 
