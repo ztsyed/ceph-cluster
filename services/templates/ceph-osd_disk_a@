@@ -4,17 +4,19 @@ Description=Ceph OSD %i - disk /dev/sda
 [Service]
 Restart=always
 RestartSec=10s
-TimeoutStartSec=0
 EnvironmentFile=/etc/environment
 Environment="DOCKER_REGISTRY=$${DOCKER_REGISTRY}"
 Environment="OSD_DISK=disk_osd"
+Environment="ETCD_HOST=10.125.146.8"
 ExecStartPre=-/usr/bin/docker kill ceph-osd-${OSD_DISK}
 ExecStartPre=-/usr/bin/docker rm ceph-osd-${OSD_DISK}
 ExecStartPre=/usr/bin/docker pull ${DOCKER_REGISTRY}ceph-osd:latest
 ExecStartPre=/bin/sh -c '/usr/bin/umount /mnt/disk_osd || /bin/true'
 ExecStartPre=/bin/sh -c '/usr/bin/mkdir /mnt/disk_osd  || /bin/true'
 ExecStartPre=/usr/bin/mount /dev/sda /mnt/disk_osd
-ExecStart=/usr/bin/docker run --rm --name ceph-osd-${OSD_DISK} --net=host --pid=host --env "HOST=${HOST_IP}" --env "OSD_DISK=${OSD_DISK}" -v /mnt/${OSD_DISK}:/var/lib/ceph/osd ${DOCKER_REGISTRY}ceph-osd:latest
+ExecStart=/usr/bin/docker run --rm --name ceph-osd-${OSD_DISK} --net=host --pid=host --env "HOST=${ETCD_HOST}" --env "OSD_DISK=${OSD_DISK}" -v /mnt/${OSD_DISK}:/var/lib/ceph/osd ${DOCKER_REGISTRY}ceph-osd:latest /app/bin/boot ceph-osd
 ExecStop=/usr/bin/docker stop ceph-osd-${OSD_DISK}
 
 [X-Fleet]
+MachineMetadata=role=d630
+Conflicts=ceph-osd_disk_a@*.service

@@ -8,7 +8,7 @@ Environment="DOCKER_REGISTRY=$${DOCKER_REGISTRY}"
 ExecStartPre=-/usr/bin/docker kill ceph-metadata
 ExecStartPre=/usr/bin/docker pull ${DOCKER_REGISTRY}ceph-metadata:latest
 ExecStartPre=/bin/sh -c "docker inspect ceph-metadata >/dev/null 2>&1 && docker rm -f ceph-metadata || true"
-ExecStart=/usr/bin/docker run --name ceph-metadata --rm -e "HOST=${HOST_IP}" --net host ${DOCKER_REGISTRY}ceph-metadata
+ExecStart=/usr/bin/docker run --name ceph-metadata --rm -e "HOST=${HOST_IP}" --net host ${DOCKER_REGISTRY}ceph-metadata /app/bin/boot
 ExecStopPost=-/usr/bin/docker stop ceph-metadata
 Restart=on-failure
 RestartSec=5
@@ -17,3 +17,4 @@ RestartSec=5
 WantedBy=multi-user.target
 
 [X-Fleet]
+MachineMetadata=role=core

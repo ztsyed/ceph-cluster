@@ -94,7 +94,7 @@ host = $HOSTNAME
 keyring = /etc/ceph/ceph.client.radosgw.keyring
 rgw socket path = /var/run/ceph/ceph.radosgw.gateway.fastcgi.sock
 log file = /dev/stdout
-rgw dns name = $HOSTNAME
+rgw dns name = ceph-gateway
 EOT
 
 cat /etc/ceph/ceph.conf

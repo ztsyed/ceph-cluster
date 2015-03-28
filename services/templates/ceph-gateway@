@@ -8,10 +8,15 @@ ExecStartPre=-/usr/bin/docker kill ceph-gateway
 ExecStartPre=-/usr/bin/docker rm ceph-gateway
 Environment="DOCKER_REGISTRY=$${DOCKER_REGISTRY}"
 ExecStartPre=/usr/bin/docker pull ${DOCKER_REGISTRY}ceph-gateway:latest
-ExecStart=/usr/bin/docker run --rm --name ceph-gateway --net=host --env HOST=${HOST_IP} --env EXTERNAL_PORT=8888 -p 8888:8888 ${DOCKER_REGISTRY}ceph-gateway
+ExecStart=/usr/bin/docker run --rm --name ceph-gateway --net=host --env HOST=${HOST_IP} --env EXTERNAL_PORT=8888 -p 8888:8888 ${DOCKER_REGISTRY}ceph-gateway gateway
+ExecStartPost=/usr/bin/etcdctl set /skydns/local/skydns/ceph-gateway/${HOSTNAME} "{\"host\":\"${HOST_IP}\",\"Port\":8888}"
+ExecStopPost=-/usr/bin/etcdctl set /skydns/local/skydns/ceph-gateway/${HOSTNAME}
 ExecStopPost=-/usr/bin/docker rm -f ceph-gateway
 Restart=on-failure
 RestartSec=5
 
 [Install]
 WantedBy=multi-user.target
+
+[X-Fleet]
+MachineMetadata=role=core

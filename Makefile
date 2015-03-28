@@ -36,7 +36,7 @@ full-clean: check-docker check-registry
 
 dev-release: push set-image
 
-services-from-templates: check-awk
+services-from-templates: check-awk check-registry
 	@mkdir -p gen/services
 	@$(foreach I, $(SERVICE_TEMPLATES), \
 		awk '{while(match($$0,"[$$][$$]{[^}]*}")) {var=substr($$0,RSTART+3,RLENGTH -4);gsub("[$$][$$]{"var"}",ENVIRON[var])}}1' < services/templates/$I > gen/services/$I.service && \

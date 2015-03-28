@@ -33,7 +33,7 @@ if ! etcdctl --no-sync -C $ETCD get ${ETCD_PATH}/filesystemSetupComplete >/dev/n
     fi
 
     if ceph fs ls | grep "No filesystems enabled" ; then
-      ceph fs new deis metadata data
+      ceph fs new erix metadata data
     fi
 
     # mark setup as complete
