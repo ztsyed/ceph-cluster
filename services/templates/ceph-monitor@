@@ -19,3 +19,4 @@ ExecStop=/usr/bin/docker stop ceph-monitor-%i
 
 [X-Fleet]
 MachineMetadata=role=core
+Conflicts=ceph-monitor@*.service

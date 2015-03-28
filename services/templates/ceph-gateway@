@@ -20,3 +20,4 @@ WantedBy=multi-user.target
 
 [X-Fleet]
 MachineMetadata=role=core
+Conflicts=ceph-gateway@*.service
