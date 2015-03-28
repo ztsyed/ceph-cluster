@@ -26,4 +26,4 @@ RUN VERSION=0.7.1 ; URL=$(curl https://github.com/kelseyhightower/confd/releases
 
 # Add shared confd configuration
 ADD . /app
-RUN chmod +x /app/getconf.sh
+RUN chmod +x /app/getconf.sh /app/createFSUser.sh
