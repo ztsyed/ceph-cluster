@@ -25,8 +25,8 @@ RUN a2enconf servername.conf
 # create gateway site, and disable the default site
 ADD s3gw.fcgi /var/www/s3gw.fcgi
 ADD rgw.conf /etc/apache2/sites-available/rgw.conf
-ADD ./createUser.sh /app/createUser.sh
-RUN chmod +x /app/createUser.sh
+ADD ./createS3User.sh /app/createS3User.sh
+RUN chmod +x /app/createS3User.sh
 
 RUN a2ensite rgw.conf
 RUN a2dissite 000-default.conf
