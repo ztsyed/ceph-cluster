@@ -94,7 +94,7 @@ host = $HOSTNAME
 keyring = /etc/ceph/ceph.client.radosgw.keyring
 rgw socket path = /var/run/ceph/ceph.radosgw.gateway.fastcgi.sock
 log file = /dev/stdout
-rgw dns name = ceph-gateway
+rgw dns name = store.erix.cloud2.ericsson-magic.net
 EOT
 
 cat /etc/ceph/ceph.conf
