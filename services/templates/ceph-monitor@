@@ -13,8 +13,8 @@ ExecStartPre=-/usr/bin/docker rm ceph-monitor-%i
 ExecStartPre=/usr/bin/docker pull ${DOCKER_REGISTRY}ceph-monitor:latest
 ExecStartPre=/bin/sh -c "etcdctl set /ceph/hosts/$HOST_IP `hostname` >/dev/null"
 ExecStart=/usr/bin/docker run --rm --name ceph-monitor-%i --net=host --volumes-from=ceph-monitor-data-%i --env HOST=${HOST_IP} ${DOCKER_REGISTRY}ceph-monitor /app/bin/boot ceph-mon
-ExecStartPost=/usr/bin/etcdctl set /skydns/local/skydns/ceph-monitor/${HOSTNAME} "{\"host\":\"${HOST_IP}\",\"Port\":8888}"
-ExecStopPost=-/usr/bin/etcdctl rm /skydns/local/skydns/ceph-monitor/${HOSTNAME}
+ExecStartPost=/usr/bin/etcdctl set /skydns/net/ericsson-magic/cloud2/erix/ceph-monitor/${HOSTNAME} "{\"host\":\"${HOST_IP}\",\"Port\":8888}"
+ExecStopPost=-/usr/bin/etcdctl rm /skydns/net/ericsson-magic/cloud2/erix/ceph-monitor/${HOSTNAME}
 ExecStop=/usr/bin/docker stop ceph-monitor-%i
 
 [X-Fleet]
